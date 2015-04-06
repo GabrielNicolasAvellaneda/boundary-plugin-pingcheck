@@ -1,9 +1,10 @@
 {
     "description" : "Pings a set of hosts and reports back their response time",
     "icon" : "icon.png",
-    "command" : "node index.js",
-    "postExtract" : "npm install",
-    "ignore" : "node_modules",
+ 	"command" : "node index.js",
+	"command_lua" : "boundary-meter init.lua",
+	"postExtract" : "npm install",
+	"postExtract_lua" : "",    
 
     "metrics" : [ "PING_RESPONSETIME" ],
 
