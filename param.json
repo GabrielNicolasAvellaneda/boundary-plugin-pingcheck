@@ -4,7 +4,16 @@
          "source": "google1",
          "pollInterval": "5",
          "host": "www.google.com"
+      },
+      {
+	"source": "github",
+	"pollInterval": "5",
+	"host": "github.com"
+      },
+      {
+	"source": "boundary",
+        "host": "boundary.com"
       }
    ],
-   "pollInterval": 1000
+   "pollInterval": 5 
 }
