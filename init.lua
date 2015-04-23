@@ -28,7 +28,7 @@ end
 
 local function createPollers (params, ping_command) 
   local pollers = PollerCollection:new() 
-  for i, item in ipairs(params.items) do
+  for _, item in ipairs(params.items) do
     
     local cmd = clone(ping_command)
     table.insert(cmd.args, item.host)
@@ -57,7 +57,7 @@ local function parseOutput(context, output)
     return
   end
 
-  local index = 0
+  local index
   local prevIndex = 0
   while true do
     index = string.find(output, '\n', prevIndex+1) 
