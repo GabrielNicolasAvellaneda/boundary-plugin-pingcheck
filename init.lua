@@ -13,6 +13,7 @@ local clone = framework.table.clone
 local params = framework.params 
 params.name = 'Boundary Pingcheck plugin'
 params.version = '1.1'
+params.tags = "ping"
 
 local commands = {
   linux = { path = '/bin/ping', args = {'-n', '-w 2', '-c 1'} },
@@ -26,11 +27,11 @@ if ping_command == nil then
   process:exit(-1)
 end
 
-local function createPollers (params, ping_command) 
+local function createPollers (params, cmd) 
   local pollers = PollerCollection:new() 
   for _, item in ipairs(params.items) do
     
-    local cmd = clone(ping_command)
+    cmd = clone(cmd)
     table.insert(cmd.args, item.host)
     cmd.info = item.source
 
@@ -61,11 +62,11 @@ local function parseOutput(context, output)
   local prevIndex = 0
   while true do
     index = string.find(output, '\n', prevIndex+1) 
-    if index == nil then break end
+    if not index then break end
 
     local line = string.sub(output, prevIndex, index-1)
     local _, _, time  = string.find(line, "time=([0-9]*%.?[0-9]+)")
-    if(time) then 
+    if time then 
       return tonumber(time)
     end
     prevIndex = index
