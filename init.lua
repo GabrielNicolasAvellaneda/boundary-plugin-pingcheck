@@ -1,9 +1,9 @@
-local framework = require('./modules/framework')
+local framework = require('framework')
 local CommandOutputDataSource = framework.CommandOutputDataSource
 local PollerCollection = framework.PollerCollection
 local DataSourcePoller = framework.DataSourcePoller
 local Plugin = framework.Plugin
-local los = require('los')
+local os = require('os')
 local table = require('table')
 local string = require('string')
 
@@ -21,7 +21,7 @@ local commands = {
   darwin = { path = '/sbin/ping', args = {'-n', '-t 2', '-c 1'} }
 }
 
-local ping_command = commands[los.type()] 
+local ping_command = commands[string.lower(os.type())] 
 if ping_command == nil then
   io.stderr:write('Your platform is not supported.  We currently support Linux, Windows and OSX\n')
   process:exit(-1)
