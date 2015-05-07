@@ -6,7 +6,7 @@ local Plugin = framework.Plugin
 local os = require('os')
 local table = require('table')
 local string = require('string')
-
+local gsplit = framework.string.gsplit 
 local isEmpty = framework.string.isEmpty
 local clone = framework.table.clone
 
@@ -23,8 +23,9 @@ local commands = {
 
 local ping_command = commands[string.lower(os.type())] 
 if ping_command == nil then
-  io.stderr:write('Your platform is not supported.  We currently support Linux, Windows and OSX\n')
-  process:exit(-1)
+
+  print("_bevent:"..(Plugin.name or params.name)..":"..(Plugin.version or params.version)..":Your platform is not supported.  We currently support Linux, Windows and OSX|t:error|tags:lua,plugin"..(Plugin.tags and framework.string.concat(Plugin.tags, ',') or params.tags))
+  process.exit(-1)
 end
 
 local function createPollers (params, cmd) 
@@ -50,26 +51,17 @@ local function parseOutput(context, output)
 
   if isEmpty(output) then
     context:emit('error', 'Unable to obtain any output.')
-    return
-  end
-
-  if (string.find(output, "unknown host") or string.find(output, "could not find host.")) then
+    return -1
+  elseif string.find(output, "unknown host") or string.find(output, "could not find host.") then
     context:emit('error', 'The host ' .. context.args[#context.args] .. ' was not found.')
-    return
+    return -1
   end
 
-  local index
-  local prevIndex = 0
-  while true do
-    index = string.find(output, '\n', prevIndex+1) 
-    if not index then break end
-
-    local line = string.sub(output, prevIndex, index-1)
-    local _, _, time  = string.find(line, "time=([0-9]*%.?[0-9]+)")
+  for line in gsplit(output, '\n') do
+    local time  = string.match(line, "time=([0-9]*%.?[0-9]+)")
     if time then 
       return tonumber(time)
     end
-    prevIndex = index
   end
 
   return -1
